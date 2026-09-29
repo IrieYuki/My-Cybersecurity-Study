@@ -2,6 +2,8 @@
 
 目标：通过校网络安全学习协会招新。时间：2026-10-01 ～ 10-07。环境：macOS / Apple M5（arm64）。
 
+**GitHub**：https://github.com/IrieYuki/My-Cybersecurity-Study （公开，改完就 push 并核实远端）
+
 **学习大纲（先看这个）**：[`网络安全自学大纲-国庆7天.md`](网络安全自学大纲-国庆7天.md)
 **环境搭建记录（含全部踩坑）**：[`notes/D0-环境搭建记录.md`](notes/D0-环境搭建记录.md)
 
