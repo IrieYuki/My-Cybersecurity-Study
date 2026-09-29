@@ -1,0 +1,49 @@
+# 本地靶场一键启动（配合 colima + docker）
+# 用法（在 labs/ 目录下）：
+#   docker compose up -d      # 启动全部
+#   docker compose ps         # 看状态
+#   docker compose logs -f dvwa
+#   docker compose down       # 全部停止并删除
+#
+# 访问（默认账号见各自说明）：
+#   8081 DVWA        默认 admin / password，需先点 Create/Reset Database，安全级别调 low
+#   8082 upload-labs 文件上传 21 关
+#   8083 sqli-labs   SQL 注入 65 关
+#   8084 xss-labs    XSS 20 关
+#   8085 pikachu     综合靶场（安装向导走一遍）
+
+services:
+  dvwa:
+    image: vulnerables/web-dvwa
+    container_name: lab-dvwa
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+
+  upload-labs:
+    image: c0ny1/upload-labs
+    container_name: lab-upload
+    ports:
+      - "8082:80"
+    restart: unless-stopped
+
+  sqli-labs:
+    image: acgpiano/sqli-labs
+    container_name: lab-sqli
+    ports:
+      - "8083:80"
+    restart: unless-stopped
+
+  xss-labs:
+    image: vulfocus/xss-labs
+    container_name: lab-xss
+    ports:
+      - "8084:80"
+    restart: unless-stopped
+
+  pikachu:
+    image: area39/pikachu
+    container_name: lab-pikachu
+    ports:
+      - "8085:80"
+    restart: unless-stopped

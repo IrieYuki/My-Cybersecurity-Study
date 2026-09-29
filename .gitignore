@@ -1,0 +1,16 @@
+# 靶场 ISO / 虚拟机镜像，体积大，不入库
+iso/
+*.iso
+*.dmg
+*.utm/
+_vm/
+
+# 抓包样本可能含明文口令，不入库
+*.pcap
+*.pcapng
+captures/
+
+# 系统噪音
+.DS_Store
+__pycache__/
+*.pyc
