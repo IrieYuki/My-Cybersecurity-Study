@@ -42,7 +42,8 @@ services:
     restart: unless-stopped
 
   pikachu:
-    image: area39/pikachu
+    # area39/pikachu 在国内镜像站偶发拉取卡死，改用 vulfocus 版本（同源靶场）
+    image: vulfocus/pikachu
     container_name: lab-pikachu
     ports:
       - "8085:80"
