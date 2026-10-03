@@ -212,7 +212,7 @@ HTTP/1.1 是**纯文本协议**：请求行、头、正文全是人能直接读�
 **终端 1**（保持运行，抓包）：
 
 ```bash
-dumpcap -i lo0 -f "tcp port 8081" -w ~/xx/网络安全/captures/dvwa-login.pcapng
+dumpcap -i lo0 -f "tcp port 8081" -w ~/xx/CS/captures/dvwa-login.pcapng
 ```
 
 然后**去浏览器**打开 http://127.0.0.1:8081 ，用 `admin` / `password` 登录。登录成功后回到**终端 1 按 `Ctrl+C`** 停止抓包。
@@ -223,16 +223,16 @@ dumpcap -i lo0 -f "tcp port 8081" -w ~/xx/网络安全/captures/dvwa-login.pcapn
 
 ```bash
 # ① 先确认抓到了 POST
-tshark -r ~/xx/网络安全/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.host -e http.request.uri
+tshark -r ~/xx/CS/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.host -e http.request.uri
 
 # ② 直接取正文 —— 你会看到一长串十六进制（不是明文！）
-tshark -r ~/xx/网络安全/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.file_data
+tshark -r ~/xx/CS/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.file_data
 
 # ③ 转回明文：管道接 xxd
-tshark -r ~/xx/网络安全/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.file_data | xxd -r -p
+tshark -r ~/xx/CS/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.file_data | xxd -r -p
 
 # ④ 顺便把 Cookie 一起看（会话身份就在这）
-tshark -r ~/xx/网络安全/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.cookie
+tshark -r ~/xx/CS/captures/dvwa-login.pcapng -Y 'http.request.method=="POST"' -T fields -e http.cookie
 ```
 
 **我的实测输出（照抄当时的真实结果）**：

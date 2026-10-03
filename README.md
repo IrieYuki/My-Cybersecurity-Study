@@ -44,7 +44,7 @@
 
 ```bash
 # —— 靶场 ——
-cd ~/xx/网络安全/labs
+cd ~/xx/CS/labs
 docker compose ps            # 看状态
 docker compose up -d         # 启动全部靶场
 docker compose down          # 全部停止并删除
