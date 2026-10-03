@@ -253,6 +253,8 @@ tshark -r ~/xx/网络安全/captures/dvwa-login.pcapng -Y 'http.request.method==
 
 抓到 Cookie 就等于拿到登录态。用命令行模拟一次完整登录（DVWA 登录页有 CSRF token，所以要两步）：
 
+> ⚠️ **常见坑**：如果你直接 `curl -d "username=admin&password=password&Login=Login"`（不带 `user_token`）会得到 `302 → Location: login.php`（跳回登录页），**这不是密码错，是缺 CSRF token**。DVWA 的 `login.php` 里 `checkToken()` 是无条件执行的——浏览器登录时自动带上了隐藏字段 `user_token`，所以浏览器能登、裸 curl 不能。**所以必须两步**：先 GET 登录页拿到 token 和 PHPSESSID，再带着 token POST。
+
 ```bash
 rm -f /tmp/dvwa.txt
 TOK=$(curl -s -c /tmp/dvwa.txt http://127.0.0.1:8081/login.php | grep -oE "user_token' value='[a-f0-9]+'" | head -1 | cut -d"'" -f3)
