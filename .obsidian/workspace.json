@@ -189,5 +189,8 @@
     }
   },
   "active": "12a4a0d255625296",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "notes/D2-Linux与抓包.md",
+    "captures/dvwa-login-demo.pcapng"
+  ]
 }
