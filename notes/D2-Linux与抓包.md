@@ -149,20 +149,15 @@ tshark -r out.pcapng -Y 'http.request' -T fields -e ip.src -e http.host -e http.
 capinfos out.pcapng                              # 看这个抓包文件的基本信息（包数、时长）
 ```
 
-**Wireshark 显示过滤器速查（今天要背下来的部分）**：
+**Wireshark 显示过滤器（今天实验用到的，完整速查见技能 `packet-capture`）**：
 
 | 过滤器 | 含义 |
 |---|---|
-| `http` / `http.request` / `http.response` | 只看 HTTP 请求/响应 |
 | `http.request.method == "POST"` | 只看 POST（**登录、上传都在这里**） |
-| `ip.addr == 192.168.64.2` | 与某 IP 通信的包（src/dst 都算） |
-| `ip.src == 127.0.0.1 && tcp.port == 8081` | 组合条件（`&&` 与、`\|\|` 或、`!` 非） |
-| `tcp.flags.syn == 1` | 只看握手包 |
-| `tcp.flags.reset == 1` | 看 RST（连接被拒/被打断） |
-| `tcp.stream eq 0` | 只看第 0 条 TCP 流（配合右键 → Follow → TCP Stream） |
-| `icmp` / `arp` / `dns` | 按协议过滤 |
-| `http contains "password"` | 内容里含某关键词 |
-| 右键 → **Follow → HTTP/TCP Stream** | **把一次完整对话拼出来看**（新手最该用的功能） |
+| `http` / `http.request` / `http.response` | 只看 HTTP 请求/响应 |
+| `ip.addr == 192.168.64.2` | 与某 IP 通信（src/dst 都算） |
+
+> **完整速查表不在这里**：BPF 捕获过滤器语法（`dumpcap -f` 表达式）、全部显示过滤器、dumpcap/tshark 参数、`xxd` 十六进制转明文、常用字段名——都整理进了技能 **`packet-capture`**（已同步 IrieYuki/xx-notes 仓库 + `~/.hermes/skills/security/`）。以后要查过滤器，直接调那个技能，不用翻这篇讲义。
 
 ---
 
