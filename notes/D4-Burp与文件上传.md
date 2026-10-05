@@ -211,3 +211,32 @@ Intercept 拦下请求改包；Repeater 反复重发单个请求看响应；Intr
 1. 一句话解释 Burp 的工作原理（为什么它能"看到并修改"浏览器发的请求）。
 2. 文件上传的三个绕过手法，分别对应哪个"检测点"被绕过（Pass-01/02/03）？
 3. 弱口令爆破怎么判断"哪个密码是对的"？（提示：不看响应内容，看一个更快的信号）
+
+---
+
+## 环境踩坑（10/4 实测）
+
+**坑 1：upload-labs 的 `upload/` 目录不存在**
+上传时报「../upload 文件夹不存在，请手工创建」——这个镜像不自带该目录。
+修法：compose 里给该 service 加 `command: sh -c "mkdir -p /var/www/html/upload && chmod 777 /var/www/html/upload && apache2-foreground"`。
+
+**坑 2：`.php3` 上传成功却不执行（浏览器显示源码）**
+镜像的 Apache 只配了 `<FilesMatch \.php$>` —— **只把 `.php` 交给 PHP**。所以 Pass-03 的 `.php3` 绕过后**能上传、不能执行**。
+修法：加 `labs/upload-labs-ext.conf` 让 `.php3/.php4/.php5/.phtml/.pht` 也执行（compose 挂载进 `conf-enabled/`）。
+**顺带收获**：这正是"**上传成功 ≠ 能执行**"的实证 —— 漏洞成立要两个条件同时满足：① 绕过上传检测 + ② 服务器会执行你的文件。
+
+**坑 3：hydra 的 http-form header 转义**
+`H=Cookie\: ...` 里的 `\:` 复制粘贴时容易丢，丢了 hydra 直接打印 usage（不报错，很坑）。用脚本 `scripts/dvwa-hydra.sh` 避免。
+
+---
+
+## 验收结果（10/4 作答）
+
+**题 1 ✓**：Burp 是浏览器与服务器之间的**代理（中间人）**，流量都经过它，所以能看能改。（与 D2 的 MITM 同一位置，区别是 Burp 是你自愿装的。）
+
+**题 2 ✓**：检测点答对，完整对应：
+- Pass-01 校验**前端 JS**（浏览器里查后缀）→ 禁用 JS / Burp 把 `.jpg` 改回 `.php`
+- Pass-02 校验 **Content-Type（MIME）**→ Burp 改成 `image/jpeg`
+- Pass-03 校验**后缀黑名单**（`.asp/.aspx/.php/.jsp`）→ 改名 `.php3`
+
+**题 3 ✓✓（今天最值钱）**：用**响应长度/状态码**这种快信号判断；**判据必须在"对/错"两种情况下取值不同，否则失效**。后半句正是当天 302 坑的总结 —— 所有响应都一样时，要回头查"请求有没有被正确处理"，而不是继续爆破。
