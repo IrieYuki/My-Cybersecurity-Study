@@ -33,6 +33,9 @@ services:
     # 这个镜像不自带 upload/ 目录，启动时先建好并给写权限
     # （否则上传时报「../upload 文件夹不存在，请手工创建」）
     command: sh -c "mkdir -p /var/www/html/upload && chmod 777 /var/www/html/upload && apache2-foreground"
+    # 让 .php3/.phtml 等也能被当 PHP 执行（镜像默认只认 .php，黑名单绕过会失效）
+    volumes:
+      - ./upload-labs-ext.conf:/etc/apache2/conf-enabled/upload-labs-ext.conf:ro
     restart: unless-stopped
 
   sqli-labs:
