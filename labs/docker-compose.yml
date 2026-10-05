@@ -30,6 +30,9 @@ services:
     container_name: lab-upload
     ports:
       - "8082:80"
+    # 这个镜像不自带 upload/ 目录，启动时先建好并给写权限
+    # （否则上传时报「../upload 文件夹不存在，请手工创建」）
+    command: sh -c "mkdir -p /var/www/html/upload && chmod 777 /var/www/html/upload && apache2-foreground"
     restart: unless-stopped
 
   sqli-labs:
