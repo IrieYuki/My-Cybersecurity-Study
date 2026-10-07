@@ -14,3 +14,9 @@ captures/
 .DS_Store
 __pycache__/
 *.pyc
+
+# 临时测试文件（webshell 等）
+test/
+
+# Obsidian 本地状态
+.obsidian/
