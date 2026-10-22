@@ -1,0 +1,4 @@
+# 编译产物不入库
+php2shell_sim
+sim_asan
+*.dSYM/
